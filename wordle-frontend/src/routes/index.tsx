@@ -1,5 +1,5 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { WordleGame } from '../pages/home'
+import { WordleGame } from '../pages/task1'
 
 const router = createBrowserRouter([
     {
