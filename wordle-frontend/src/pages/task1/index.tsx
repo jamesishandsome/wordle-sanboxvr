@@ -10,8 +10,6 @@ const KEYBOARD_LETTERS = [
 ]
 
 const WordleGame = () => {
-    // an array of arrays of strings
-    // ['','','','','',''] * 6
     const initialGuesses = Array.from({ length: MAX_GUESSES }, () =>
         Array.from({ length: WORD_LENGTH }, () => '')
     )
@@ -36,9 +34,25 @@ const WordleGame = () => {
         setGuesses(newGuesses)
         setCurrentGuess((prev) => [prev[0], Math.max(prev[1] - 1, 0)])
     }
+
+    const handleSubmit = () => {
+        if(currentGuess[1] !== WORD_LENGTH){
+            alert()
+            return
+        }
+        //TODO: check if word is valid
+        //TODO: check if word is correct
+        console.log('Submitted')
+        if(currentGuess[0] === MAX_GUESSES-1){
+            alert('Game Over')
+        }
+        else{
+            setCurrentGuess([currentGuess[0] + 1, 0])
+        }
+    }
     return (
         <div className="flex flex-col items-center justify-center min-h-screen w-screen bg-gray-100">
-            <h1 className="text-4xl font-bold mb-8">Wordle</h1>
+            <h1 className="text-4xl font-bold mb-8 text-black">Wordle</h1>
             <div className="grid grid-rows-6 gap-1 mb-8">
                 {Array.from({ length: MAX_GUESSES }).map((_, index) => (
                     <div key={index} className="flex gap-1">
@@ -47,7 +61,7 @@ const WordleGame = () => {
                                 <div
                                     key={index1}
                                     id={`guess-${index}`}
-                                    className={`w-14 h-14 border-2 border-gray-300 flex items-center justify-center text-2xl font-bold rounded-md`}
+                                    className={`w-14 h-14 border-2 border-gray-300 flex items-center justify-center text-2xl font-bold rounded-md text-black`}
                                 >
                                     {guesses[index][index1]}
                                 </div>
@@ -75,7 +89,7 @@ const WordleGame = () => {
                 <Button className="px-4 py-2" onClick={handleDelete}>
                     Delete
                 </Button>
-                <Button className="px-4 py-2">Submit</Button>
+                <Button className="px-4 py-2" onClick={handleSubmit}>Submit</Button>
             </div>
         </div>
     )
