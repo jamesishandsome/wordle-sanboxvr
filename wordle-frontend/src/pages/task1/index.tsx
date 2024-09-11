@@ -22,6 +22,7 @@ const WordleGame = () => {
         Array.from({ length: WORD_LENGTH }, () => '')
     )
     const [started, setStarted] = useState(false)
+    const [paused, setPaused] = useState(false)
     const [guesses, setGuesses] = useState<string[][]>(initialGuesses)
     const [word, setWord] = useState(ANSWER)
     const [currentGuess, setCurrentGuess] = useState([0, 0])
@@ -31,15 +32,20 @@ const WordleGame = () => {
     })
     const shake = contextSafe((index: string) => {
         // span under row0
+        setPaused(true)
+        // after 1 second
+        setTimeout(() => {
+            setPaused(false)
+        }, 600)
         const tl = gsap.timeline()
         tl.to(`#row${index} span`, { color: 'red', duration: 0 })
-            .to(`#row${index} span`, {
-                keyframes: {
-                    x: [30, -30, 30, -30, 30, -30, 0],
-                },
-                duration: 1,
-            })
-            .to(`#row${index} span`, { color: 'black', duration: 0 })
+        tl.to(`#row${index} span`, {
+            keyframes: {
+                x: [0, 50, -50, 50, -50, 50, -50, 0],
+            },
+            duration: 0.5,
+        })
+        tl.to(`#row${index} span`, { color: 'black', duration: 0 })
     })
     const initGame = () => {
         setGuesses(initialGuesses)
@@ -52,6 +58,9 @@ const WordleGame = () => {
         if (!started) {
             return
         }
+        if (paused) {
+            return
+        }
         if (currentGuess[1] < WORD_LENGTH) {
             const newGuesses = [...guesses]
             newGuesses[currentGuess[0]][currentGuess[1]] = letter
@@ -62,6 +71,9 @@ const WordleGame = () => {
 
     const handleDelete = () => {
         if (!started) {
+            return
+        }
+        if (paused) {
             return
         }
         if (currentGuess[1] === 0) {
@@ -77,8 +89,10 @@ const WordleGame = () => {
         if (!started) {
             return
         }
+        if (paused) {
+            return
+        }
         if (currentGuess[1] !== WORD_LENGTH) {
-            alert()
             return
         }
         //TODO: check if word is valid
@@ -87,19 +101,48 @@ const WordleGame = () => {
             (word) => word === guesses[currentGuess[0]].join('').toLowerCase()
         )
         if (!valid) {
-            // alert('Invalid word')
             shake(currentGuess[0].toString())
             return
         }
 
         //TODO: check if word is correct
         if (guesses[currentGuess[0]].join('').toUpperCase() === word) {
-            alert('You win!')
+            const fiveBlocks = document.querySelectorAll(
+                `#row${currentGuess[0]} div`
+            ) as NodeListOf<HTMLDivElement>
+            fiveBlocks.forEach((block) => {
+                block.style.backgroundColor = 'green'
+            })
             return
         }
         if (currentGuess[0] === MAX_GUESSES - 1) {
             alert('Game Over')
         } else {
+            // the word is not correct
+            const thisGuess = guesses[currentGuess[0]].join('').toUpperCase()
+            // correct:0, position:1, not exist:2
+            const res = thisGuess.split('').map((letter, index) => {
+                if (word.includes(letter)) {
+                    return word[index] === letter ? 0 : 1
+                } else {
+                    return 2
+                }
+            })
+            const fiveBlocks = document.querySelectorAll(
+                `#row${currentGuess[0]} div`
+            ) as NodeListOf<HTMLDivElement>
+            res.map((item, index) => {
+                if (item === 0) {
+                    fiveBlocks[index].style.backgroundColor = 'green'
+                }
+                if (item === 1) {
+                    fiveBlocks[index].style.backgroundColor = 'yellow'
+                }
+                if (item === 2) {
+                    fiveBlocks[index].style.backgroundColor = 'red'
+                }
+            })
+
             setCurrentGuess([currentGuess[0] + 1, 0])
         }
     }
@@ -153,7 +196,7 @@ const WordleGame = () => {
                         {row.map((letter) => (
                             <Button
                                 key={letter}
-                                onClick={() => handleKeyPress(letter)}
+                                onPress={() => handleKeyPress(letter)}
                                 className="w-10 h-10 text-lg font-semibold"
                             >
                                 {letter}
@@ -163,10 +206,10 @@ const WordleGame = () => {
                 ))}
             </div>
             <div className="flex gap-2">
-                <Button className="px-4 py-2" onClick={handleDelete}>
+                <Button className="px-4 py-2" onPress={handleDelete}>
                     Delete
                 </Button>
-                <Button className="px-4 py-2" onClick={handleSubmit}>
+                <Button className="px-4 py-2" onPress={handleSubmit}>
                     Submit
                 </Button>
             </div>
