@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Button } from '@nextui-org/react'
+import { Transition } from '@headlessui/react'
 
 const WORD_LENGTH = 5
 const MAX_GUESSES = 6
@@ -36,17 +37,16 @@ const WordleGame = () => {
     }
 
     const handleSubmit = () => {
-        if(currentGuess[1] !== WORD_LENGTH){
+        if (currentGuess[1] !== WORD_LENGTH) {
             alert()
             return
         }
         //TODO: check if word is valid
         //TODO: check if word is correct
         console.log('Submitted')
-        if(currentGuess[0] === MAX_GUESSES-1){
+        if (currentGuess[0] === MAX_GUESSES - 1) {
             alert('Game Over')
-        }
-        else{
+        } else {
             setCurrentGuess([currentGuess[0] + 1, 0])
         }
     }
@@ -63,7 +63,17 @@ const WordleGame = () => {
                                     id={`guess-${index}`}
                                     className={`w-14 h-14 border-2 border-gray-300 flex items-center justify-center text-2xl font-bold rounded-md text-black`}
                                 >
-                                    {guesses[index][index1]}
+                                    <Transition
+                                        show={guesses[index][index1] !== ''}
+                                    >
+                                        <span
+                                            className={
+                                                'transition duration-300 ease-in data-[closed]:opacity-0'
+                                            }
+                                        >
+                                            {guesses[index][index1]}
+                                        </span>
+                                    </Transition>
                                 </div>
                             )
                         )}
@@ -89,7 +99,9 @@ const WordleGame = () => {
                 <Button className="px-4 py-2" onClick={handleDelete}>
                     Delete
                 </Button>
-                <Button className="px-4 py-2" onClick={handleSubmit}>Submit</Button>
+                <Button className="px-4 py-2" onClick={handleSubmit}>
+                    Submit
+                </Button>
             </div>
         </div>
     )
