@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Button } from '@nextui-org/react'
 import { Transition } from '@headlessui/react'
+import { useKeyPress } from 'ahooks'
+import wordList from './wordle.json'
 
 const WORD_LENGTH = 5
 const MAX_GUESSES = 6
@@ -42,6 +44,15 @@ const WordleGame = () => {
             return
         }
         //TODO: check if word is valid
+        console.log(guesses[currentGuess[0]].join(''))
+        const valid = wordList.find(
+            (word) => word === guesses[currentGuess[0]].join('').toLowerCase()
+        )
+        if (!valid) {
+            alert('Invalid word')
+            return
+        }
+
         //TODO: check if word is correct
         console.log('Submitted')
         if (currentGuess[0] === MAX_GUESSES - 1) {
@@ -50,6 +61,16 @@ const WordleGame = () => {
             setCurrentGuess([currentGuess[0] + 1, 0])
         }
     }
+
+    useKeyPress(KEYBOARD_LETTERS.flat(), (event) => {
+        handleKeyPress(event.key.toUpperCase())
+    })
+
+    // backspace
+    useKeyPress('Backspace', handleDelete)
+
+    // enter
+    useKeyPress('Enter', handleSubmit)
     return (
         <div className="flex flex-col items-center justify-center min-h-screen w-screen bg-gray-100">
             <h1 className="text-4xl font-bold mb-8 text-black">Wordle</h1>
