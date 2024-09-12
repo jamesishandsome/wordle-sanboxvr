@@ -3,10 +3,6 @@ import { Button } from '@nextui-org/react'
 import { Transition } from '@headlessui/react'
 import { useKeyPress } from 'ahooks'
 import wordList from './wordle.json'
-import gsap from 'gsap'
-import { useGSAP } from '@gsap/react'
-
-gsap.registerPlugin(useGSAP)
 const WORD_LENGTH = 5
 const MAX_GUESSES = 6
 const ANSWER = 'HELLO'
@@ -15,6 +11,10 @@ const KEYBOARD_LETTERS = [
     ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
     ['Z', 'X', 'C', 'V', 'B', 'N', 'M'],
 ]
+const COLOR_WRONG_POS = '#c9b458'
+const COLOR_NOT_EXIST = '#787c7e'
+const COLOR_CORRECT = '#6aaa64'
+import { animate } from 'framer-motion'
 
 const WordleGame = () => {
     const ref = useRef(null)
@@ -27,29 +27,41 @@ const WordleGame = () => {
     const [word, setWord] = useState(ANSWER)
     const [currentGuess, setCurrentGuess] = useState([0, 0])
 
-    const { contextSafe } = useGSAP({
-        scope: ref,
-    })
-    const shake = contextSafe((index: string) => {
+    const shake = async (index: string) => {
         // span under row0
         setPaused(true)
         // after 1 second
         setTimeout(() => {
             setPaused(false)
         }, 600)
-        const tl = gsap.timeline()
-        tl.to(`#row${index} span`, { color: 'red', duration: 0 })
-        tl.to(`#row${index} span`, {
-            keyframes: {
-                x: [0, 50, -50, 50, -50, 50, -50, 0],
-            },
-            duration: 0.5,
+        // animate(`#row${index} span`, { color: 'red', duration: 0 })
+        document.querySelectorAll(`#row${index} span`).forEach((span) => {
+            //     add classname text-red-400
+            span.classList.add('text-red-400')
         })
-        tl.to(`#row${index} span`, { color: 'black', duration: 0 })
-    })
+        await animate(
+            `#row${index} span`,
+            { x: [0, -100, 100, -100, 100, -100, 100, 0] },
+            {
+                type: 'keyframes',
+                duration: 0.6,
+            }
+        )
+        document.querySelectorAll(`#row${index} span`).forEach((span) => {
+            //     remove classname text-red-400
+            span.classList.remove('text-red-400')
+        })
+        // animate(`#row${index} span`, { color: 'black', duration: 0 })
+    }
     const initGame = () => {
         setGuesses(initialGuesses)
         setCurrentGuess([0, 0])
+        // set all background color to white
+        document.querySelectorAll('div[id^=row] div').forEach((block) => {
+            const divBlock = block as HTMLDivElement
+            divBlock.style.backgroundColor = 'white'
+            divBlock.style.color = 'black'
+        })
         setWord(ANSWER)
         setStarted(true)
     }
@@ -85,7 +97,7 @@ const WordleGame = () => {
         setCurrentGuess((prev) => [prev[0], Math.max(prev[1] - 1, 0)])
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!started) {
             return
         }
@@ -101,7 +113,7 @@ const WordleGame = () => {
             (word) => word === guesses[currentGuess[0]].join('').toLowerCase()
         )
         if (!valid) {
-            shake(currentGuess[0].toString())
+            await shake(currentGuess[0].toString())
             return
         }
 
@@ -111,7 +123,11 @@ const WordleGame = () => {
                 `#row${currentGuess[0]} div`
             ) as NodeListOf<HTMLDivElement>
             fiveBlocks.forEach((block) => {
-                block.style.backgroundColor = 'green'
+                // block.style.backgroundColor = COLOR_CORRECT
+                animate(block, {
+                    backgroundColor: COLOR_CORRECT,
+                    color: 'white',
+                })
             })
             return
         }
@@ -131,15 +147,28 @@ const WordleGame = () => {
             const fiveBlocks = document.querySelectorAll(
                 `#row${currentGuess[0]} div`
             ) as NodeListOf<HTMLDivElement>
+
             res.map((item, index) => {
                 if (item === 0) {
-                    fiveBlocks[index].style.backgroundColor = 'green'
+                    // fiveBlocks[index].style.backgroundColor = COLOR_CORRECT
+                    animate(fiveBlocks[index], {
+                        backgroundColor: COLOR_CORRECT,
+                        color: 'white',
+                    })
                 }
                 if (item === 1) {
-                    fiveBlocks[index].style.backgroundColor = 'yellow'
+                    // fiveBlocks[index].style.backgroundColor = COLOR_WRONG_POS
+                    animate(fiveBlocks[index], {
+                        backgroundColor: COLOR_WRONG_POS,
+                        color: 'white',
+                    })
                 }
                 if (item === 2) {
-                    fiveBlocks[index].style.backgroundColor = 'red'
+                    // fiveBlocks[index].style.backgroundColor = COLOR_NOT_EXIST
+                    animate(fiveBlocks[index], {
+                        backgroundColor: COLOR_NOT_EXIST,
+                        color: 'white',
+                    })
                 }
             })
 
@@ -161,7 +190,7 @@ const WordleGame = () => {
         initGame()
     }, [])
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen w-screen bg-gray-100">
+        <div className="flex flex-col items-center justify-center h-full w-full bg-gray-100">
             <h1 className="text-4xl font-bold mb-8 text-black">Wordle</h1>
             <div ref={ref} className="grid grid-rows-6 gap-1 mb-8">
                 {Array.from({ length: MAX_GUESSES }).map((_, index) => (
@@ -211,6 +240,9 @@ const WordleGame = () => {
                 </Button>
                 <Button className="px-4 py-2" onPress={handleSubmit}>
                     Submit
+                </Button>
+                <Button className={'px-4 py-2'} onPress={initGame}>
+                    Restart
                 </Button>
             </div>
         </div>

@@ -1,57 +1,27 @@
-import { Outlet } from 'react-router-dom'
-
+import { Link, Outlet } from 'react-router-dom'
+import { Navbar, NavbarContent, NavbarItem } from '@nextui-org/navbar'
 const Layout = () => {
     return (
-        <div className={'w-screen h-screen'}>
-            <header className="bg-white">
-                <div className="mx-auto flex h-16 max-w-screen-xl items-center gap-8 px-4 sm:px-6 lg:px-8">
-                    <div className="flex flex-1 items-center justify-end md:justify-between">
-                        <nav aria-label="Global" className="hidden md:block">
-                            <ul className="flex items-center gap-6 text-sm">
-                                <li>
-                                    <a
-                                        className="text-gray-500 transition hover:text-gray-500/75"
-                                        href="/task1"
-                                    >
-                                        {' '}
-                                        Task1{' '}
-                                    </a>
-                                </li>
-
-                                <li>
-                                    <a
-                                        className="text-gray-500 transition hover:text-gray-500/75"
-                                        href="#"
-                                    >
-                                        {' '}
-                                        Task2{' '}
-                                    </a>
-                                </li>
-
-                                <li>
-                                    <a
-                                        className="text-gray-500 transition hover:text-gray-500/75"
-                                        href="#"
-                                    >
-                                        {' '}
-                                        Task3{' '}
-                                    </a>
-                                </li>
-
-                                <li>
-                                    <a
-                                        className="text-gray-500 transition hover:text-gray-500/75"
-                                        href="#"
-                                    >
-                                        {' '}
-                                        Task4{' '}
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
-            </header>
+        <div className={'w-screen h-screen flex flex-col '}>
+            <Navbar className={'bg-gray-100 shadow '} position="static">
+                <NavbarContent
+                    className="hidden sm:flex gap-4"
+                    justify="center"
+                >
+                    <NavbarItem>
+                        <Link to="/task1">Task 1</Link>
+                    </NavbarItem>
+                    <NavbarItem>
+                        <Link to="/task2">Task 2</Link>
+                    </NavbarItem>
+                    <NavbarItem>
+                        <Link to="/task3">Task 3</Link>
+                    </NavbarItem>
+                    <NavbarItem>
+                        <Link to="/task4">Task 4</Link>
+                    </NavbarItem>
+                </NavbarContent>
+            </Navbar>
             <Outlet />
         </div>
     )
