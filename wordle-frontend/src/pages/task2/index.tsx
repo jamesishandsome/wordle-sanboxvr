@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
+import { Button } from '@nextui-org/react'
 import { Transition } from '@headlessui/react'
 import { useKeyPress } from 'ahooks'
+import axios from 'axios'
 import wordList from './wordle.json'
+
 const WORD_LENGTH = 5
 const MAX_GUESSES = 6
-const ANSWER = 'HELLO'
+
 const KEYBOARD_LETTERS = [
     ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
     ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
@@ -15,7 +18,7 @@ const COLOR_NOT_EXIST = '#787c7e'
 const COLOR_CORRECT = '#6aaa64'
 import { animate } from 'framer-motion'
 
-const WordleGame = () => {
+const WordleGame2 = () => {
     const ref = useRef(null)
     const initialGuesses = Array.from({ length: MAX_GUESSES }, () =>
         Array.from({ length: WORD_LENGTH }, () => '')
@@ -23,7 +26,6 @@ const WordleGame = () => {
     const [started, setStarted] = useState(false)
     const [paused, setPaused] = useState(false)
     const [guesses, setGuesses] = useState<string[][]>(initialGuesses)
-    const [word, setWord] = useState(ANSWER)
     const [currentGuess, setCurrentGuess] = useState([0, 0])
 
     const shake = async (index: string) => {
@@ -67,10 +69,8 @@ const WordleGame = () => {
                 { duration: 0 }
             )
         })
-        setWord(ANSWER)
         setStarted(true)
     }
-
     const handleWin = () => {
         setStarted(false)
     }
@@ -78,7 +78,6 @@ const WordleGame = () => {
     const handleLose = () => {
         setStarted(false)
     }
-
     const handleKeyPress = (letter: string) => {
         if (!started) {
             return
@@ -131,7 +130,11 @@ const WordleGame = () => {
         }
 
         //TODO: check if word is correct
-        if (guesses[currentGuess[0]].join('').toUpperCase() === word) {
+        const { data } = await axios.post('http://localhost:8787', {
+            session: '1',
+            input: guesses[currentGuess[0]].join(''),
+        })
+        if (data.every((val: number) => val === 0)) {
             const fiveBlocks = document.querySelectorAll(
                 `#row${currentGuess[0]} div`
             ) as NodeListOf<HTMLDivElement>
@@ -139,55 +142,44 @@ const WordleGame = () => {
                 // block.style.backgroundColor = COLOR_CORRECT
                 animate(block, {
                     backgroundColor: COLOR_CORRECT,
-                    color: '#FFF',
+                    color: 'white',
                 })
             })
             handleWin()
             return
-        }
-        if (currentGuess[0] === MAX_GUESSES - 1) {
-            alert('Game Over')
-            handleLose()
         } else {
-            // the word is not correct
-            const thisGuess = guesses[currentGuess[0]].join('').toUpperCase()
-            // correct:0, position:1, not exist:2
-            const res = thisGuess.split('').map((letter, index) => {
-                if (word.includes(letter)) {
-                    return word[index] === letter ? 0 : 1
-                } else {
-                    return 2
-                }
-            })
             const fiveBlocks = document.querySelectorAll(
                 `#row${currentGuess[0]} div`
             ) as NodeListOf<HTMLDivElement>
 
-            res.map((item, index) => {
+            data.map((item, index) => {
                 if (item === 0) {
                     // fiveBlocks[index].style.backgroundColor = COLOR_CORRECT
                     animate(fiveBlocks[index], {
-                        backgroundColor: ['#FFF', COLOR_CORRECT],
-                        color: '#FFF',
+                        backgroundColor: ['white', COLOR_CORRECT],
+                        color: 'white',
                     })
                 }
                 if (item === 1) {
                     // fiveBlocks[index].style.backgroundColor = COLOR_WRONG_POS
                     animate(fiveBlocks[index], {
-                        backgroundColor: ['#FFF', COLOR_WRONG_POS],
-                        color: '#FFF',
+                        backgroundColor: ['white', COLOR_WRONG_POS],
+                        color: 'white',
                     })
                 }
                 if (item === 2) {
                     // fiveBlocks[index].style.backgroundColor = COLOR_NOT_EXIST
                     animate(fiveBlocks[index], {
-                        backgroundColor: ['#FFF', COLOR_NOT_EXIST],
-                        color: '#FFF',
+                        backgroundColor: ['white', COLOR_NOT_EXIST],
+                        color: 'white',
                     })
                 }
             })
-
             setCurrentGuess([currentGuess[0] + 1, 0])
+        }
+        if (currentGuess[0] === MAX_GUESSES - 1) {
+            alert('Game Over')
+            handleLose()
         }
     }
 
@@ -238,44 +230,30 @@ const WordleGame = () => {
                 {KEYBOARD_LETTERS.map((row, rowIndex) => (
                     <div key={rowIndex} className="flex justify-center gap-1">
                         {row.map((letter) => (
-                            <div
+                            <Button
                                 key={letter}
-                                data-key={letter}
-                                onClick={() => {
-                                    handleKeyPress(letter)
-                                }}
-                                className="w-14 h-10 text-lg font-semibold flex items-center justify-center cursor-pointer border-2 border-gray-300 hover:bg-gray-200 transition duration-150 ease-in-out"
+                                onPress={() => handleKeyPress(letter)}
+                                className="w-10 h-10 text-lg font-semibold"
                             >
                                 {letter}
-                            </div>
+                            </Button>
                         ))}
                     </div>
                 ))}
             </div>
             <div className="flex gap-2">
-                <div
-                    className="w-20 h-10 text-lg font-semibold flex items-center justify-center cursor-pointer border-2 border-gray-300 hover:bg-gray-200 transition duration-150 ease-in-out"
-                    onClick={handleDelete}
-                >
+                <Button className="px-4 py-2" onPress={handleDelete}>
                     Delete
-                </div>
-                <div
-                    className="w-20 h-10 text-lg font-semibold flex items-center justify-center cursor-pointer border-2 border-gray-300 hover:bg-gray-200 transition duration-150 ease-in-out"
-                    onClick={handleSubmit}
-                >
+                </Button>
+                <Button className="px-4 py-2" onPress={handleSubmit}>
                     Submit
-                </div>
-                <div
-                    className={
-                        'w-20 h-10 text-lg font-semibold flex items-center justify-center cursor-pointer border-2 border-gray-300 hover:bg-gray-200 transition duration-150 ease-in-out'
-                    }
-                    onClick={initGame}
-                >
+                </Button>
+                <Button className={'px-4 py-2'} onPress={initGame}>
                     Restart
-                </div>
+                </Button>
             </div>
         </div>
     )
 }
 
-export { WordleGame }
+export { WordleGame2 }
