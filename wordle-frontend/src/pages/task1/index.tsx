@@ -64,6 +64,7 @@ const WordleGame = () => {
     const initGame = () => {
         setGuesses(initialGuesses)
         setCurrentGuess([0, 0])
+        console.log(winOpen)
         // set all background color to white
         document
             .querySelectorAll('div[id^=row] div')
