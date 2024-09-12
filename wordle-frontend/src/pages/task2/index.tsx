@@ -129,7 +129,7 @@ const WordleGame2 = () => {
         }
 
         //TODO: check if word is correct
-        const { data } = await axios.post('http://localhost:8787', {
+        const { data } = await axios.post(import.meta.env.VITE_TASK_API_URL, {
             session: '1',
             input: guesses[currentGuess[0]].join(''),
         })
