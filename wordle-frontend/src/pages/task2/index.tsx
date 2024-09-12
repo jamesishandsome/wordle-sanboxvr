@@ -152,7 +152,7 @@ const WordleGame2 = () => {
                 `#row${currentGuess[0]} div`
             ) as NodeListOf<HTMLDivElement>
 
-            data.map((item, index) => {
+            data.map((item: number, index: number) => {
                 if (item === 0) {
                     // fiveBlocks[index].style.backgroundColor = COLOR_CORRECT
                     animate(fiveBlocks[index], {
