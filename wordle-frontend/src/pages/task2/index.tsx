@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import { Button } from '@nextui-org/react'
 import { Transition } from '@headlessui/react'
 import { useKeyPress } from 'ahooks'
 import axios from 'axios'
@@ -142,7 +141,7 @@ const WordleGame2 = () => {
                 // block.style.backgroundColor = COLOR_CORRECT
                 animate(block, {
                     backgroundColor: COLOR_CORRECT,
-                    color: 'white',
+                    color: '#FFF',
                 })
             })
             handleWin()
@@ -156,22 +155,22 @@ const WordleGame2 = () => {
                 if (item === 0) {
                     // fiveBlocks[index].style.backgroundColor = COLOR_CORRECT
                     animate(fiveBlocks[index], {
-                        backgroundColor: ['white', COLOR_CORRECT],
-                        color: 'white',
+                        backgroundColor: ['#FFF', COLOR_CORRECT],
+                        color: '#FFF',
                     })
                 }
                 if (item === 1) {
                     // fiveBlocks[index].style.backgroundColor = COLOR_WRONG_POS
                     animate(fiveBlocks[index], {
-                        backgroundColor: ['white', COLOR_WRONG_POS],
-                        color: 'white',
+                        backgroundColor: ['#FFF', COLOR_WRONG_POS],
+                        color: '#FFF',
                     })
                 }
                 if (item === 2) {
                     // fiveBlocks[index].style.backgroundColor = COLOR_NOT_EXIST
                     animate(fiveBlocks[index], {
-                        backgroundColor: ['white', COLOR_NOT_EXIST],
-                        color: 'white',
+                        backgroundColor: ['#FFF', COLOR_NOT_EXIST],
+                        color: '#FFF',
                     })
                 }
             })
@@ -230,27 +229,41 @@ const WordleGame2 = () => {
                 {KEYBOARD_LETTERS.map((row, rowIndex) => (
                     <div key={rowIndex} className="flex justify-center gap-1">
                         {row.map((letter) => (
-                            <Button
+                            <div
                                 key={letter}
-                                onPress={() => handleKeyPress(letter)}
-                                className="w-10 h-10 text-lg font-semibold"
+                                data-key={letter}
+                                onClick={() => {
+                                    handleKeyPress(letter)
+                                }}
+                                className="w-14 h-10 text-lg font-semibold flex items-center justify-center cursor-pointer border-2 border-gray-300 hover:bg-gray-200 transition duration-150 ease-in-out"
                             >
                                 {letter}
-                            </Button>
+                            </div>
                         ))}
                     </div>
                 ))}
             </div>
             <div className="flex gap-2">
-                <Button className="px-4 py-2" onPress={handleDelete}>
+                <div
+                    className="w-20 h-10 text-lg font-semibold flex items-center justify-center cursor-pointer border-2 border-gray-300 hover:bg-gray-200 transition duration-150 ease-in-out"
+                    onClick={handleDelete}
+                >
                     Delete
-                </Button>
-                <Button className="px-4 py-2" onPress={handleSubmit}>
+                </div>
+                <div
+                    className="w-20 h-10 text-lg font-semibold flex items-center justify-center cursor-pointer border-2 border-gray-300 hover:bg-gray-200 transition duration-150 ease-in-out"
+                    onClick={handleSubmit}
+                >
                     Submit
-                </Button>
-                <Button className={'px-4 py-2'} onPress={initGame}>
+                </div>
+                <div
+                    className={
+                        'w-20 h-10 text-lg font-semibold flex items-center justify-center cursor-pointer border-2 border-gray-300 hover:bg-gray-200 transition duration-150 ease-in-out'
+                    }
+                    onClick={initGame}
+                >
                     Restart
-                </Button>
+                </div>
             </div>
         </div>
     )
