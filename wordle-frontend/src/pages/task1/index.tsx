@@ -15,6 +15,7 @@ const COLOR_WRONG_POS = '#c9b458'
 const COLOR_NOT_EXIST = '#787c7e'
 const COLOR_CORRECT = '#6aaa64'
 import { animate } from 'framer-motion'
+import { WinModal } from '../../components/winModal.tsx'
 
 const WordleGame = () => {
     const ref = useRef(null)
@@ -64,7 +65,6 @@ const WordleGame = () => {
     const initGame = () => {
         setGuesses(initialGuesses)
         setCurrentGuess([0, 0])
-        console.log(winOpen)
         // set all background color to white
         document
             .querySelectorAll('div[id^=row] div')
@@ -259,6 +259,11 @@ const WordleGame = () => {
             <LoseModal
                 open={loseOpen}
                 setOpen={setLoseOpen}
+                word={word}
+            />
+            <WinModal
+                open={winOpen}
+                setOpen={setWinOpen}
                 word={word}
             />
             <h1 className="text-4xl font-bold mb-8 text-black">

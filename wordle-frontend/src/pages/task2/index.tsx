@@ -16,6 +16,8 @@ const COLOR_WRONG_POS = '#c9b458'
 const COLOR_NOT_EXIST = '#787c7e'
 const COLOR_CORRECT = '#6aaa64'
 import { animate } from 'framer-motion'
+import { LoseModal } from '../../components/loseModal.tsx'
+import { WinModal } from '../../components/winModal.tsx'
 
 const WordleGame2 = () => {
     const ref = useRef(null)
@@ -28,6 +30,10 @@ const WordleGame2 = () => {
     const [guesses, setGuesses] =
         useState<string[][]>(initialGuesses)
     const [currentGuess, setCurrentGuess] = useState([0, 0])
+    const [winOpen, setWinOpen] = useState(false)
+    const [loseOpen, setLoseOpen] = useState(false)
+    const [word, setWord] = useState('')
+    const [session, setSession] = useState('')
 
     const shake = async (index: string) => {
         // span under row0
@@ -59,7 +65,8 @@ const WordleGame2 = () => {
             })
         // animate(`#row${index} span`, { color: 'black', duration: 0 })
     }
-    const initGame = () => {
+    const initGame = async () => {
+        await getSession()
         setGuesses(initialGuesses)
         setCurrentGuess([0, 0])
         // set all background color to white
@@ -78,12 +85,32 @@ const WordleGame2 = () => {
             })
         setStarted(true)
     }
-    const handleWin = () => {
-        setStarted(false)
+
+    const getWord = async () => {
+        const { data } = await axios.get(
+            import.meta.env.VITE_TASK_API_URL,
+            { params: { session: session } }
+        )
+        console.log(data)
+        setWord(data)
     }
 
-    const handleLose = () => {
+    const getSession = async () => {
+        const { data } = await axios.get(
+            import.meta.env.VITE_TASK_API_URL + '/init-game'
+        )
+        setSession(data.session)
+    }
+    const handleWin = async () => {
+        await getWord()
         setStarted(false)
+        setWinOpen(true)
+    }
+
+    const handleLose = async () => {
+        await getWord()
+        setStarted(false)
+        setLoseOpen(true)
     }
     const handleKeyPress = (letter: string) => {
         if (!started) {
@@ -152,7 +179,7 @@ const WordleGame2 = () => {
         const { data } = await axios.post(
             import.meta.env.VITE_TASK_API_URL,
             {
-                session: '1',
+                session: session,
                 input: guesses[currentGuess[0]].join(''),
             }
         )
@@ -167,7 +194,7 @@ const WordleGame2 = () => {
                     color: '#FFF',
                 })
             })
-            handleWin()
+            await handleWin()
             return
         } else {
             const fiveBlocks = document.querySelectorAll(
@@ -209,8 +236,7 @@ const WordleGame2 = () => {
             setCurrentGuess([currentGuess[0] + 1, 0])
         }
         if (currentGuess[0] === MAX_GUESSES - 1) {
-            alert('Game Over')
-            handleLose()
+            await handleLose()
         }
     }
 
@@ -225,10 +251,22 @@ const WordleGame2 = () => {
     useKeyPress('Enter', handleSubmit)
 
     useEffect(() => {
-        initGame()
+        ;(async () => {
+            await initGame()
+        })()
     }, [])
     return (
         <div className="flex flex-col items-center justify-center h-full w-full bg-gray-100">
+            <LoseModal
+                open={loseOpen}
+                setOpen={setLoseOpen}
+                word={word}
+            />
+            <WinModal
+                open={winOpen}
+                setOpen={setWinOpen}
+                word={word}
+            />
             <h1 className="text-4xl font-bold mb-8 text-black">
                 Wordle
             </h1>
