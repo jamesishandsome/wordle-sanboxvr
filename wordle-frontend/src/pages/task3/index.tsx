@@ -300,15 +300,21 @@ const WordleGame3 = () => {
                     )
                     console.log('scoreList', scoreList)
                     // in scoreList, group them according to score
-                    const groupedScoreList: {} =
-                        scoreList.reduce((acc, cur) => {
+                    const groupedScoreList: {
+                        [p: string]: string[]
+                    } = scoreList.reduce(
+                        (acc, cur) => {
                             const key = cur.score.join('')
                             if (!acc[key]) {
                                 acc[key] = []
                             }
                             acc[key].push(cur.word)
                             return acc
-                        }, {})
+                        },
+                        {} as {
+                            [key: string]: string[]
+                        }
+                    )
                     console.log(
                         'groupedScoreList',
                         groupedScoreList
