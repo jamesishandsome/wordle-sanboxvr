@@ -27,7 +27,7 @@ const COLOR_CORRECT = '#6aaa64'
 const ROOM_ID = '12345'
 import { animate } from 'framer-motion'
 import { WinModal } from '../../components/winModal.tsx'
-import { Button, Input } from '@nextui-org/react'
+import { Button } from '@nextui-org/react'
 import { WaitingConnectionModal } from './components/waitingConnection.tsx'
 import { StartGameModal } from './components/startGameModal.tsx'
 import { ChangeTurnModal } from './components/changeTurnModal.tsx'
@@ -61,8 +61,6 @@ const WordleGameTask4 = () => {
     )
     const [yourTurn, setYourTurn] = useState(false)
     const [yourTurnOpen, setYourTurnOpen] = useState(false)
-    const [yourTurnOpenable, setYourTurnOpenable] =
-        useState(false)
     const [bothConnected, setBothConnected] = useState(true)
     const [gameStart, setGameStart] = useState(false)
 
