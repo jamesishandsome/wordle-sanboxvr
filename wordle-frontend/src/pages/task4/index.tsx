@@ -357,7 +357,6 @@ const WordleGameTask4 = () => {
         if (!yourTurn) {
             return
         }
-        setYourTurn(false)
         if (!started) {
             return
         }
@@ -381,6 +380,7 @@ const WordleGameTask4 = () => {
             await shake(currentGuess[0].toString())
             return
         }
+        setYourTurn(false)
 
         //TODO: check if word is correct
         if (
