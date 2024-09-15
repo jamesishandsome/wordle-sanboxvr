@@ -42,13 +42,26 @@ io.on('connection', (socket: Socket) => {
         console.log('userId: ', userId)
     })
     socket.on('createRoom', (roomId: string) => {
+        // join it with userId
         socket.join(roomId)
+
         //     if there are two people in the room, start the game
         if (
             io.sockets.adapter.rooms.get(roomId)?.size === 2
         ) {
-            io.to(roomId).emit('startGame')
+            // get random number from 0 to 1000
+            const randomNumber = Math.floor(
+                Math.random() * 1000
+            )
+
+            io.to(roomId).emit('startGame', randomNumber)
         }
+    })
+
+    socket.on('whoFirst', (data: any) => {
+        const userId = data.userId
+        const roomId = data.roomId
+        io.to(roomId).emit('whoFirst', userId)
     })
     socket.on('action', (data: any) => {
         console.log(data)

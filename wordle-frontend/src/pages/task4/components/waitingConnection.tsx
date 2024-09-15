@@ -4,7 +4,7 @@ import {
     DialogTitle,
 } from '@headlessui/react'
 
-const StartGameModal = ({
+const WaitingConnectionModal = ({
     open,
     setOpen,
 }: {
@@ -17,7 +17,7 @@ const StartGameModal = ({
             <div className="fixed inset-0 flex items-center justify-center p-4">
                 <DialogPanel className="w-fit max-w-md rounded bg-white p-4">
                     <DialogTitle className="text-lg font-bold text-black text-center">
-                        Game Start! Click anywhere to start
+                        Waiting for your enemy...
                     </DialogTitle>
                     <div className="text-sm text-gray-500 flex justify-center mt-2"></div>
                 </DialogPanel>
@@ -26,4 +26,4 @@ const StartGameModal = ({
     )
 }
 
-export { StartGameModal }
+export { WaitingConnectionModal }

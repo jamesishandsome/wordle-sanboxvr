@@ -24,9 +24,12 @@ const KEYBOARD_LETTERS = [
 const COLOR_WRONG_POS = '#c9b458'
 const COLOR_NOT_EXIST = '#787c7e'
 const COLOR_CORRECT = '#6aaa64'
+const ROOM_ID = '12345'
 import { animate } from 'framer-motion'
 import { WinModal } from '../../components/winModal.tsx'
 import { Button } from '@nextui-org/react'
+import { WaitingConnectionModal } from './components/waitingConnection.tsx'
+import { StartGameModal } from './components/startGameModal.tsx'
 // import { StartGameModal } from './components/startGameModal.tsx'
 
 const WordleGameTask4 = () => {
@@ -55,6 +58,9 @@ const WordleGameTask4 = () => {
     const latestEnemyCurrentGuess = useLatest(
         enemyCurrentGuess
     )
+    const [yourTurn, setYourTurn] = useState(false)
+    const [bothConnected, setBothConnected] = useState(true)
+    const [gameStart, setGameStart] = useState(false)
 
     const [winOpen, setWinOpen] = useState(false)
     const [loseOpen, setLoseOpen] = useState(false)
@@ -112,6 +118,29 @@ const WordleGameTask4 = () => {
 
     useEffect(() => {
         //     when receiving from io
+        socket.on(
+            'startGame',
+            async (wordIndex: number) => {
+                const thisWord = wordList[wordIndex]
+                console.log(thisWord)
+                setWord(thisWord.toUpperCase())
+                setBothConnected(true)
+                sendWhoFirst()
+            }
+        )
+        socket.on(
+            'whoFirst',
+            async (firstUserId: string) => {
+                if (firstUserId === userId) {
+                    setYourTurn(true)
+                } else {
+                    setYourTurn(false)
+                }
+                setStarted(true)
+                setGameStart(true)
+            }
+        )
+
         socket.on('action', async (data: any) => {
             console.log('receive data', data)
             // TODO: if it is not your userId, which means it's your enemy's then show it on your enemy's board
@@ -181,6 +210,7 @@ const WordleGameTask4 = () => {
                         }
                     )
                 )
+                setYourTurn(true)
 
                 console.log(latestEnemyCurrentGuess.current)
                 console.log(latestEnemyGuesses)
@@ -188,8 +218,12 @@ const WordleGameTask4 = () => {
         })
     }, [socket, userId])
 
+    const sendWhoFirst = () => {
+        socket.emit('whoFirst', { roomId: ROOM_ID, userId })
+    }
     const sendUserId = () => {
-        socket.emit('createRoom', '123')
+        socket.emit('createRoom', ROOM_ID)
+        setBothConnected(false)
     }
 
     const shake = async (index: string) => {
@@ -245,7 +279,6 @@ const WordleGameTask4 = () => {
                 Math.floor(Math.random() * 2306)
             ].toUpperCase()
         setWord(randomWord)
-        setStarted(true)
     }
 
     const handleWin = () => {
@@ -259,10 +292,16 @@ const WordleGameTask4 = () => {
     }
 
     const handleKeyPress = (letter: string) => {
+        if (!yourTurn) {
+            console.log('not your turn')
+            return
+        }
         if (!started) {
+            console.log('game not started')
             return
         }
         if (paused) {
+            console.log('game paused')
             return
         }
         if (currentGuess[1] < WORD_LENGTH) {
@@ -278,6 +317,9 @@ const WordleGameTask4 = () => {
     }
 
     const handleDelete = () => {
+        if (!yourTurn) {
+            return
+        }
         if (!started) {
             return
         }
@@ -306,23 +348,16 @@ const WordleGameTask4 = () => {
             action: 'send',
             word: thisGuess,
             res: res,
-            roomId: '123',
+            roomId: ROOM_ID,
         }
         socket.emit('action', action)
     }
 
-    // const handleReceiveAction = async (action: {
-    //     userId: string | undefined
-    //     action: string
-    //     word: string
-    //     roomId: string
-    // }) => {
-    //     if (action.action === 'send') {
-    //         console.log(action)
-    //     }
-    // }
-
     const handleSubmit = async () => {
+        if (!yourTurn) {
+            return
+        }
+        setYourTurn(false)
         if (!started) {
             return
         }
@@ -446,6 +481,7 @@ const WordleGameTask4 = () => {
                 <div className="basis-1/2 mr-4 flex flex-col items-center">
                     <Button
                         className={'fixed top-20 right-10'}
+                        disabled={started}
                         onClick={sendUserId}
                     >
                         Start
@@ -461,8 +497,17 @@ const WordleGameTask4 = () => {
                         setOpen={setWinOpen}
                         word={word}
                     />
+                    <WaitingConnectionModal
+                        open={!bothConnected}
+                        setOpen={setBothConnected}
+                    />
+                    <StartGameModal
+                        open={gameStart}
+                        setOpen={setGameStart}
+                    />
+
                     <h1 className="text-4xl font-bold mb-8 text-black">
-                        Player's Game
+                        Your Game
                     </h1>
                     {/* 玩家的游戏界面 */}
                     <div
