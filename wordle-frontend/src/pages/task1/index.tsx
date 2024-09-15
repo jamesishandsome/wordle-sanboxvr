@@ -147,7 +147,7 @@ const WordleGame = () => {
         if (currentGuess[1] !== WORD_LENGTH) {
             return
         }
-        //TODO: check if word is valid
+        //check if word is valid
         console.log(guesses[currentGuess[0]].join(''))
         const valid = wordList.find(
             (word) =>
@@ -161,7 +161,7 @@ const WordleGame = () => {
             return
         }
 
-        //TODO: check if word is correct
+        //check if word is correct
         if (
             guesses[currentGuess[0]]
                 .join('')

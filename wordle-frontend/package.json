@@ -5,9 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && vitepress build docs && mkdir -p dist/docs && cp -r docs/.vitepress/dist dist/docs",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs",
+    "movedocs": "mkdir -p dist/docs && cp -r docs/.vitepress/dist dist/docs"
   },
   "dependencies": {
     "@headlessui/react": "^2.1.6",
@@ -37,6 +41,7 @@
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.1",
-    "vite-plugin-remove-console": "^2.2.0"
+    "vite-plugin-remove-console": "^2.2.0",
+    "vitepress": "^1.3.4"
   }
 }
