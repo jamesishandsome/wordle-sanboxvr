@@ -4,7 +4,6 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
     title: "James Hu's Wordle",
     description: "James Hu's Wordle",
-    base: '/docs/',
     themeConfig: {
         // https://vitepress.dev/reference/default-theme-config
         nav: [
