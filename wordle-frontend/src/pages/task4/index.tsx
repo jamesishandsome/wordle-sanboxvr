@@ -27,9 +27,10 @@ const COLOR_CORRECT = '#6aaa64'
 const ROOM_ID = '12345'
 import { animate } from 'framer-motion'
 import { WinModal } from '../../components/winModal.tsx'
-import { Button } from '@nextui-org/react'
+import { Button, Input } from '@nextui-org/react'
 import { WaitingConnectionModal } from './components/waitingConnection.tsx'
 import { StartGameModal } from './components/startGameModal.tsx'
+import { ChangeTurnModal } from './components/changeTurnModal.tsx'
 // import { StartGameModal } from './components/startGameModal.tsx'
 
 const WordleGameTask4 = () => {
@@ -59,6 +60,9 @@ const WordleGameTask4 = () => {
         enemyCurrentGuess
     )
     const [yourTurn, setYourTurn] = useState(false)
+    const [yourTurnOpen, setYourTurnOpen] = useState(false)
+    const [yourTurnOpenable, setYourTurnOpenable] =
+        useState(false)
     const [bothConnected, setBothConnected] = useState(true)
     const [gameStart, setGameStart] = useState(false)
 
@@ -74,6 +78,19 @@ const WordleGameTask4 = () => {
     const [isConnected, setIsConnected] = useState(
         socket.connected
     )
+
+    useEffect(() => {
+        if (yourTurn && !gameStart) {
+            setYourTurnOpen(true)
+        }
+    }, [yourTurn, started])
+
+    const checkTurn = (set: boolean) => {
+        if (yourTurn) {
+            setYourTurnOpen(true)
+        }
+        setGameStart(set)
+    }
 
     useEffect(() => {
         if (isConnected) {
@@ -210,6 +227,13 @@ const WordleGameTask4 = () => {
                         }
                     )
                 )
+                // if res is [0,0,0,0,0] then handle lose
+                if (
+                    res.every((item: number) => item === 0)
+                ) {
+                    setLoseOpen(true)
+                    return
+                }
                 setYourTurn(true)
 
                 console.log(latestEnemyCurrentGuess.current)
@@ -398,10 +422,66 @@ const WordleGameTask4 = () => {
                     color: '#FFF',
                 })
             })
+            await handleSendAction(
+                guesses[currentGuess[0]].join(''),
+                [0, 0, 0, 0, 0]
+            )
             handleWin()
             return
         }
         if (currentGuess[0] === MAX_GUESSES - 1) {
+            const thisGuess = guesses[currentGuess[0]]
+                .join('')
+                .toUpperCase()
+            // correct:0, position:1, not exist:2
+            const res = thisGuess
+                .split('')
+                .map((letter, index) => {
+                    if (word.includes(letter)) {
+                        return word[index] === letter
+                            ? 0
+                            : 1
+                    } else {
+                        return 2
+                    }
+                })
+            const fiveBlocks = document.querySelectorAll(
+                `#row${currentGuess[0]} div`
+            ) as NodeListOf<HTMLDivElement>
+
+            res.map((item, index) => {
+                if (item === 0) {
+                    // fiveBlocks[index].style.backgroundColor = COLOR_CORRECT
+                    animate(fiveBlocks[index], {
+                        backgroundColor: [
+                            '#FFF',
+                            COLOR_CORRECT,
+                        ],
+                        color: '#FFF',
+                    })
+                }
+                if (item === 1) {
+                    // fiveBlocks[index].style.backgroundColor = COLOR_WRONG_POS
+                    animate(fiveBlocks[index], {
+                        backgroundColor: [
+                            '#FFF',
+                            COLOR_WRONG_POS,
+                        ],
+                        color: '#FFF',
+                    })
+                }
+                if (item === 2) {
+                    // fiveBlocks[index].style.backgroundColor = COLOR_NOT_EXIST
+                    animate(fiveBlocks[index], {
+                        backgroundColor: [
+                            '#FFF',
+                            COLOR_NOT_EXIST,
+                        ],
+                        color: '#FFF',
+                    })
+                }
+            })
+            await handleSendAction(thisGuess, res)
             handleLose()
         } else {
             // the word is not correct
@@ -479,13 +559,20 @@ const WordleGameTask4 = () => {
         <div className="flex flex-col items-center justify-center h-full w-full bg-gray-100">
             <div className="w-full flex justify-between px-10">
                 <div className="basis-1/2 mr-4 flex flex-col items-center">
-                    <Button
+                    <div
                         className={'fixed top-20 right-10'}
-                        disabled={started}
-                        onClick={sendUserId}
                     >
-                        Start
-                    </Button>
+                        {/*<Input*/}
+                        {/*    id={'roomId'}*/}
+                        {/*    placeholder={'room id'}*/}
+                        {/*/>*/}
+                        <Button
+                            disabled={started}
+                            onClick={sendUserId}
+                        >
+                            Start
+                        </Button>
+                    </div>
                     {/*<StartGameModal />*/}
                     <LoseModal
                         open={loseOpen}
@@ -497,13 +584,17 @@ const WordleGameTask4 = () => {
                         setOpen={setWinOpen}
                         word={word}
                     />
+                    <ChangeTurnModal
+                        open={yourTurnOpen}
+                        setOpen={setYourTurnOpen}
+                    />
                     <WaitingConnectionModal
                         open={!bothConnected}
                         setOpen={setBothConnected}
                     />
                     <StartGameModal
                         open={gameStart}
-                        setOpen={setGameStart}
+                        setOpen={checkTurn}
                     />
 
                     <h1 className="text-4xl font-bold mb-8 text-black">
