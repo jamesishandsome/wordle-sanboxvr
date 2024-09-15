@@ -444,7 +444,7 @@ const WordleGame3 = () => {
                 times={maxGuess}
             />
             <h1 className="text-4xl font-bold mb-8 text-black">
-                Wordle Task3
+                Absurdle
             </h1>
             <div
                 ref={ref}

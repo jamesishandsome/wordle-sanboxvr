@@ -6,6 +6,7 @@ import { WordleGame } from '../pages/task1'
 import { Layout } from '../layout.tsx'
 import { WordleGame2 } from '../pages/task2'
 import { WordleGame3 } from '../pages/task3'
+import { WordleGameTask4 } from '../pages/task4'
 
 const router = createBrowserRouter([
     {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
             {
                 path: 'task3',
                 element: <WordleGame3 />,
+            },
+            {
+                path: 'task4',
+                element: <WordleGameTask4 />,
             },
         ],
     },
