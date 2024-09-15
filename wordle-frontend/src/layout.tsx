@@ -1,9 +1,20 @@
 import { Link, Outlet } from 'react-router-dom'
-import { Navbar, NavbarContent, NavbarItem } from '@nextui-org/navbar'
+import {
+    Navbar,
+    NavbarContent,
+    NavbarItem,
+} from '@nextui-org/navbar'
 const Layout = () => {
     return (
-        <div className={'w-screen h-screen flex flex-col '}>
-            <Navbar className={'bg-gray-100 shadow '} position="static">
+        <div
+            className={
+                'w-screen min-h-screen h-full flex flex-col bg-gray-100'
+            }
+        >
+            <Navbar
+                className={'bg-gray-100 shadow '}
+                position="static"
+            >
                 <NavbarContent
                     className="hidden sm:flex gap-4"
                     justify="center"
@@ -22,7 +33,9 @@ const Layout = () => {
                     </NavbarItem>
                 </NavbarContent>
             </Navbar>
-            <Outlet />
+            <div className={'py-12'}>
+                <Outlet />
+            </div>
         </div>
     )
 }

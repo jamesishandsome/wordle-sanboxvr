@@ -26,7 +26,7 @@ const LoseModal = ({
                         <div>
                             The word was:{' '}
                             <span className="font-bold">
-                                {word}
+                                {word.toLowerCase()}
                             </span>
                         </div>
                     </Description>

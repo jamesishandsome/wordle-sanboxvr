@@ -181,7 +181,6 @@ const WordleGame = () => {
             return
         }
         if (currentGuess[0] === MAX_GUESSES - 1) {
-            alert('Game Over')
             handleLose()
         } else {
             // the word is not correct
@@ -267,7 +266,7 @@ const WordleGame = () => {
                 word={word}
             />
             <h1 className="text-4xl font-bold mb-8 text-black">
-                Wordle
+                Wordle Task1
             </h1>
             <div
                 ref={ref}

@@ -1,5 +1,4 @@
 import {
-    Description,
     Dialog,
     DialogPanel,
     DialogTitle,
@@ -22,14 +21,14 @@ const WinModal = ({
                     <DialogTitle className="text-lg font-bold text-black text-center">
                         You Win!
                     </DialogTitle>
-                    <Description className="text-sm text-gray-500 flex justify-center mt-2">
+                    <div className="text-sm text-gray-500 flex justify-center mt-2">
                         <div>
                             The word was:{' '}
                             <span className="font-bold">
-                                {word}
+                                {word.toLowerCase()}
                             </span>
                         </div>
-                    </Description>
+                    </div>
                 </DialogPanel>
             </div>
         </Dialog>

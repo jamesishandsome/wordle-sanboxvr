@@ -268,7 +268,7 @@ const WordleGame2 = () => {
                 word={word}
             />
             <h1 className="text-4xl font-bold mb-8 text-black">
-                Wordle
+                Wordle Task2
             </h1>
             <div
                 ref={ref}
