@@ -16,10 +16,6 @@ export default defineConfig({
                 text: 'Docs',
                 items: [
                     {
-                        text: 'Documents',
-                        link: '/documents',
-                    },
-                    {
                         text: 'Task 1',
                         link: '/documents#task-1-normal-wordle',
                     },
