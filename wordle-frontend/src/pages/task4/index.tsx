@@ -24,7 +24,6 @@ const KEYBOARD_LETTERS = [
 const COLOR_WRONG_POS = '#c9b458'
 const COLOR_NOT_EXIST = '#787c7e'
 const COLOR_CORRECT = '#6aaa64'
-const ROOM_ID = '12345'
 import { animate } from 'framer-motion'
 import { WinModal } from '../../components/winModal.tsx'
 import { Button } from '@nextui-org/react'
@@ -63,6 +62,8 @@ const WordleGameTask4 = () => {
     const [yourTurnOpen, setYourTurnOpen] = useState(false)
     const [bothConnected, setBothConnected] = useState(true)
     const [gameStart, setGameStart] = useState(false)
+    const [roomId, setRoomId] = useState('')
+    const latestRoomId = useLatest(roomId)
 
     const [winOpen, setWinOpen] = useState(false)
     const [loseOpen, setLoseOpen] = useState(false)
@@ -241,10 +242,23 @@ const WordleGameTask4 = () => {
     }, [socket, userId])
 
     const sendWhoFirst = () => {
-        socket.emit('whoFirst', { roomId: ROOM_ID, userId })
+        socket.emit('whoFirst', {
+            roomId: latestRoomId.current,
+            userId,
+        })
     }
     const sendUserId = () => {
-        socket.emit('createRoom', ROOM_ID)
+        const roomIdFromInput =
+            document.querySelector<HTMLInputElement>(
+                '#roomId'
+            )?.value
+        if (!roomIdFromInput) {
+            alert('no room id provided')
+            return
+        }
+        setRoomId(roomIdFromInput)
+
+        socket.emit('createRoom', roomIdFromInput)
         setBothConnected(false)
     }
 
@@ -370,7 +384,7 @@ const WordleGameTask4 = () => {
             action: 'send',
             word: thisGuess,
             res: res,
-            roomId: ROOM_ID,
+            roomId: latestRoomId.current,
         }
         socket.emit('action', action)
     }
@@ -554,16 +568,21 @@ const WordleGameTask4 = () => {
         initGame()
     }, [])
     return (
-        <div className="flex flex-col items-center justify-center h-full w-full bg-gray-100">
+        <div className="flex flex-col items-center justify-center h-full w-full bg-gray-100 py-12">
             <div className="w-full flex justify-between px-10">
                 <div className="basis-1/2 mr-4 flex flex-col items-center">
                     <div
-                        className={'fixed top-20 right-10'}
+                        className={
+                            'fixed top-40 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex gap-4'
+                        }
                     >
-                        {/*<Input*/}
-                        {/*    id={'roomId'}*/}
-                        {/*    placeholder={'room id'}*/}
-                        {/*/>*/}
+                        <input
+                            type="text"
+                            placeholder="Enter Room ID"
+                            id={'roomId'}
+                            className="bg-white w-40 h-10 ml-2 px-3 border-2 border-gray-300 rounded-md text-black focus:outline-none focus:border-blue-500 transition duration-150 ease-in-out"
+                        />
+
                         <Button
                             disabled={started}
                             onClick={sendUserId}

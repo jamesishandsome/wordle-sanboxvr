@@ -7,12 +7,17 @@ import { Layout } from '../layout.tsx'
 import { WordleGame2 } from '../pages/task2'
 import { WordleGame3 } from '../pages/task3'
 import { WordleGameTask4 } from '../pages/task4'
+import { Home } from '../pages/home/home.tsx'
 
 const router = createBrowserRouter([
     {
         path: '/',
         element: <Layout />,
         children: [
+            {
+                path: '/',
+                element: <Home />,
+            },
             {
                 path: 'task1',
                 element: <WordleGame />,

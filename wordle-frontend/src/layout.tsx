@@ -33,7 +33,7 @@ const Layout = () => {
                     </NavbarItem>
                 </NavbarContent>
             </Navbar>
-            <div className={'py-12'}>
+            <div className={'h-full'}>
                 <Outlet />
             </div>
         </div>

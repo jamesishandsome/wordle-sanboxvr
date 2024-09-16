@@ -431,7 +431,7 @@ const WordleGame3 = () => {
         initGame()
     }, [])
     return (
-        <div className="flex flex-col items-center justify-center min-h-full h-fit w-full bg-gray-100 overflow-auto">
+        <div className="flex flex-col items-center justify-center min-h-full h-fit w-full bg-gray-100 overflow-auto py-12">
             <LoseModal
                 open={loseOpen}
                 setOpen={setLoseOpen}
