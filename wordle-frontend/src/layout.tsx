@@ -4,6 +4,7 @@ import {
     NavbarContent,
     NavbarItem,
 } from '@nextui-org/navbar'
+import { NavbarBrand } from '@nextui-org/react'
 const Layout = () => {
     return (
         <div
@@ -15,6 +16,9 @@ const Layout = () => {
                 className={'bg-gray-100 shadow '}
                 position="static"
             >
+                <NavbarBrand className={'text-black'}>
+                    <Link to={'/'}>Wordle</Link>
+                </NavbarBrand>
                 <NavbarContent
                     className="hidden sm:flex gap-4"
                     justify="center"
@@ -30,6 +34,23 @@ const Layout = () => {
                     </NavbarItem>
                     <NavbarItem>
                         <Link to="/task4">Task 4</Link>
+                    </NavbarItem>
+                    <NavbarItem>
+                        <Link
+                            to="https://wordle-sanboxvr-doc.pages.dev"
+                            target="_blank"
+                        >
+                            Docs
+                        </Link>
+                    </NavbarItem>
+                    {/*github*/}
+                    <NavbarItem>
+                        <a
+                            href="https://github.com/jamesishandsome/wordle-sanboxvr"
+                            target="_blank"
+                        >
+                            Github
+                        </a>
                     </NavbarItem>
                 </NavbarContent>
             </Navbar>

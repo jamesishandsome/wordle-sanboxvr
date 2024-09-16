@@ -14,6 +14,7 @@ This is just a normal wordle in React.
 4. ahooks - I do like some of the hooks in ahooks. In my projects for company, I have the utils and hooks written by myself for security reason. But this time I will just call them from ahooks.
 5. normal stuff - like react hooks, useState, useEffect, etc. I believe most of the developers are familiar with these.
 6. cloudflare pages - for deploying. This is a free static webpage hosting service just like GitHub page. And I think it's much faster than GitHub page.
+7. framer motion - for animation. Actually there are a lot of choice in the market. But I like framer motion because it's very easy to use and it's very fast.
 
 ### Is there anything special in this task?
 
@@ -90,7 +91,7 @@ Testing it on my own during the development is a nightmare.
 ### How to play it?
 1. This game is for 2 players.
 2. Both players enter the page.
-3. Both of them clicking on the Start button.
+3. Both of them input the same room number (eg. 123456) and click on the Start button.
 4. Their answer will be same word and they need to input one by one.
 5. They can also refer to the answer the other player input.
 6. Whoever get the correct answer will win.
@@ -111,8 +112,8 @@ Here are some of my ideas based on my current one:
 ### Anything to improve?
 I don't have too much time to work on this task so actually there are a lot of things I haven't done.
 1. UI - The modals are quite ugly and I think if I have one more day, I will fix it. But unfortunately, I still have my full time job :(
-2. The logic of paring game. I didn't implement this feature. For now there can be only 2 players playing 1 game because I hardcoded the room id. It is not difficult to allow user to input the room id and let them pair on their own. But I think make it functional is more important, and it's enough for demo already.
-
+2. The logic of paring game - I didn't implement this feature. For now there can be only 2 players manually input the same room number to play 1 game maybe it is possible to have a paring mechanism. I think it's possible to let them pair unknown enemy. But I think make it functional is more important, and it's enough for demo already.
+3. restart game feature - The right way should be after one game, there is a confirmation modal asking if they want to play again. But I don't have too much time to implement that, so after each game, the players need to fresh the page for next game.
 ## Conclusion
 In my opinion, this project is a demo to showcase my frontend, backend, infrastructure and algorithmic skills.
 I think I have tried my best to show as much as possible.
