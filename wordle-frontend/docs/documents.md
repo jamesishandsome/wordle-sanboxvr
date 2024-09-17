@@ -114,6 +114,9 @@ I don't have too much time to work on this task so actually there are a lot of t
 1. UI - The modals are quite ugly and I think if I have one more day, I will fix it. But unfortunately, I still have my full time job :(
 2. The logic of paring game - I didn't implement this feature. For now there can be only 2 players manually input the same room number to play 1 game maybe it is possible to have a paring mechanism. I think it's possible to let them pair unknown enemy. But I think make it functional is more important, and it's enough for demo already.
 3. restart game feature - The right way should be after one game, there is a confirmation modal asking if they want to play again. But I don't have too much time to implement that, so after each game, the players need to fresh the page for next game.
+4. websocket - actually in this task, SSE + redis might be somehow better than websocket. Websocket is too expensive for
+   this task and SSE + redis is more scalable. But SSE needs more debugging and testing so eventually I chose websocket.
+
 ## Conclusion
 In my opinion, this project is a demo to showcase my frontend, backend, infrastructure and algorithmic skills.
 I think I have tried my best to show as much as possible.
